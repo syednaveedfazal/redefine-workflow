@@ -33,11 +33,8 @@ const routes = [
 ];
 export function DesktopSidebar() {
   const pathname = usePathname();
-  const activeRoute = routes.find(
-    (route) =>
-      (route.href.length > 0 && pathname.includes(route.href)) || routes[0]
-  );
-
+  const activeRoute =
+    routes.find((route) => `/${route.href}` === pathname) || routes[0];
   return (
     <div
       className="hidden relative md:block min-w-[280px] max-w-[280px] h-screen overflow-hidden w-full 
