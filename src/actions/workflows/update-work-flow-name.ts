@@ -5,8 +5,11 @@ import {
 } from "@/formSchema/workflow";
 import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
-import { WorkflowStatus } from "@/types/workflow-types";
-export async function CreateWorkflow(form: createWorkflowSchemaType) {
+import { redirect } from "next/navigation";
+export async function UpdateWorkflowName(
+  form: createWorkflowSchemaType,
+  id: string
+) {
   const { success, data } = createWorkflowSchema.safeParse(form);
   if (!success) {
     throw new Error("Invalid form data");
@@ -15,16 +18,19 @@ export async function CreateWorkflow(form: createWorkflowSchemaType) {
   if (!userId) {
     throw new Error("User not authenticated");
   }
-  const result = await prisma.workflow.create({
-    data: {
+
+  const result = prisma.workflow.update({
+    where: {
+      id,
       userId,
-      definition: "Todo",
-      status: WorkflowStatus.DRAFT,
-      ...data,
+    },
+    data: {
+      name: data.name,
+      description: data.description,
     },
   });
   if (!result) {
     throw new Error("Failed to create workflow");
   }
-  return `/workflow/editor/${result.id}`;
+  redirect(`/workflows`);
 }

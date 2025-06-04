@@ -5,10 +5,11 @@ import { WorkflowStatus } from "@/types/workflow-types";
 import { FileTextIcon, PlayIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-
-const statusColors = {
+import { EditDropdown } from "@/components/custom/edit-option";
+const statusColors: Record<WorkflowStatus, string> = {
   [WorkflowStatus.DRAFT]: "bg-yellow-400 text-yellow-700",
   [WorkflowStatus.PUBLISHED]: "bg-primary",
+  [WorkflowStatus.ARCHIVED]: "bg-gray-400 text-gray-700",
 };
 export function WorkflowCard({ workflow }: { workflow: Workflow }) {
   const isDraft = workflow.status === WorkflowStatus.DRAFT;
@@ -17,7 +18,7 @@ export function WorkflowCard({ workflow }: { workflow: Workflow }) {
       className="border border-separate shadow-sm rounded-lg overflow-hidden
         hover:shadow-md dark:shadow-primary/30"
     >
-      <CardContent className="flex p-4 items-center justify-between h-[70px]">
+      <CardContent className="flex p-4 items-center gap-4 h-[70px]">
         <div
           className={cn(
             "w-10 h-10 rounded-full flex items-center justify-center",
@@ -33,7 +34,7 @@ export function WorkflowCard({ workflow }: { workflow: Workflow }) {
         <div>
           <h3 className="text-base font-bold text-muted-foreground flex items-center">
             <Link
-              href={`/workflows/editor/${workflow.id}`}
+              href={`/workflow/editor/${workflow.id}`}
               className="hover:underline flex items-center gap-2"
             >
               {workflow.name}
@@ -46,6 +47,20 @@ export function WorkflowCard({ workflow }: { workflow: Workflow }) {
               ""
             )}
           </h3>
+          {workflow?.description && (
+            <div>
+              <span
+                className={cn(
+                  "text-xs text-foreground font-medium px-2 py-1 rounded-full"
+                )}
+              >
+                {workflow.description}
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="flex ml-auto items-center gap-2">
+          <EditDropdown workflowId={workflow.id} />
         </div>
       </CardContent>
     </Card>
